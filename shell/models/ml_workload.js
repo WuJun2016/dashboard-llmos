@@ -14,34 +14,34 @@ export default class MlWorkload extends MLWorkloadService {
     let out = super._availableActions;
 
     insertAt(out, 0, {
-      action:  'openShell',
+      action: 'openShell',
       enabled: !!this.links.view,
-      icon:    'icon icon-fw icon-chevron-right',
-      label:   this.t('action.openShell'),
-      total:   1,
+      icon: 'icon icon-fw icon-chevron-right',
+      label: this.t('action.openShell'),
+      total: 1,
     });
 
     if (type !== ML_WORKLOAD_TYPES.RAY_CLUSTER) {
       insertAt(out, 1, {
-        action:  'pause',
-        label:   this.t('asyncButton.pause.action'),
-        icon:    'icon icon-pause',
-        enabled: !!this.links.update && !this.isPaused
+        action: 'pause',
+        label: this.t('asyncButton.pause.action'),
+        icon: 'icon icon-pause',
+        enabled: !!this.links.update && !this.isPaused,
       });
 
       insertAt(out, 1, {
-        action:  'resume',
-        label:   this.t('asyncButton.resume.action'),
-        icon:    'icon icon-play',
-        enabled: !!this.links.update && this.isPaused
+        action: 'resume',
+        label: this.t('asyncButton.resume.action'),
+        icon: 'icon icon-play',
+        enabled: !!this.links.update && this.isPaused,
       });
     }
 
     insertAt(out, 5, {
-      action:   'redeploy',
-      label:    this.t('action.redeploy'),
-      icon:     'icon icon-refresh',
-      enabled:  !!this.links.update,
+      action: 'redeploy',
+      label: this.t('action.redeploy'),
+      icon: 'icon icon-refresh',
+      enabled: !!this.links.update,
       bulkable: true,
     });
 
@@ -67,10 +67,14 @@ export default class MlWorkload extends MLWorkloadService {
       }
     }
 
-    this.$dispatch('growl/error', {
-      title:   'Unavailable',
-      message: 'There are no running pods to execute a shell in.'
-    }, { root: true });
+    this.$dispatch(
+      'growl/error',
+      {
+        title: 'Unavailable',
+        message: 'There are no running pods to execute a shell in.',
+      },
+      { root: true }
+    );
   }
 
   get available() {
@@ -80,27 +84,28 @@ export default class MlWorkload extends MLWorkloadService {
   get details() {
     return [
       {
-        label:   this.t('mlWorkload.detail.detailTop.cpu'),
-        content: this.cpuLimit
+        label: this.t('mlWorkload.detail.detailTop.cpu'),
+        content: this.cpuLimit,
       },
       {
-        label:   this.t('mlWorkload.detail.detailTop.memory'),
-        content: this.memoryLimit
+        label: this.t('mlWorkload.detail.detailTop.memory'),
+        content: this.memoryLimit,
       },
       {
-        label:   this.t('mlWorkload.detail.detailTop.vgpu'),
+        label: this.t('mlWorkload.detail.detailTop.vgpu'),
         content: this.vgpu,
       },
       {
-        label:   this.t('mlWorkload.detail.detailTop.vram'),
+        label: this.t('mlWorkload.detail.detailTop.vram'),
         content: this.vram,
-      }];
+      },
+    ];
   }
 
   redeploy() {
-    const now = (new Date()).toISOString().replace(/\.\d+Z$/, 'Z');
+    const now = new Date().toISOString().replace(/\.\d+Z$/, 'Z');
 
-    if ( !this.metadata ) {
+    if (!this.metadata) {
       set(this, 'metadata', {});
     }
 
@@ -117,7 +122,13 @@ export default class MlWorkload extends MLWorkloadService {
     for (const pod of pods) {
       pod.remove();
     }
-    this.$dispatch('growl/success', { message: `${ this.kind } ${ this.name } has been successfully redeployed.` }, { root: true });
+    this.$dispatch(
+      'growl/success',
+      {
+        message: `${this.kind} ${this.name} has been successfully redeployed.`,
+      },
+      { root: true }
+    );
   }
 
   get warnDeletionMessage() {
@@ -157,7 +168,7 @@ export default class MlWorkload extends MLWorkloadService {
       } else {
         out[stateDisplay] = {
           color: stateColor.replace('text-', ''),
-          count: 1
+          count: 1,
         };
       }
     });
@@ -167,7 +178,9 @@ export default class MlWorkload extends MLWorkloadService {
 
   async matchingPods() {
     const all = await this.$dispatch('findAll', { type: POD });
-    const allInNamespace = all.filter((pod) => pod.metadata.namespace === this.metadata.namespace);
+    const allInNamespace = all.filter(
+      (pod) => pod.metadata.namespace === this.metadata.namespace
+    );
 
     const selector = convertSelectorObj(this.podSelector);
 
@@ -178,30 +191,33 @@ export default class MlWorkload extends MLWorkloadService {
     const type = this._type ? this._type : this.type;
 
     switch (type) {
-    case ML_WORKLOAD_TYPES.MODEL_SERVICE:
-      return this.spec?.selector;
-    case ML_WORKLOAD_TYPES.NOTEBOOK:
-      return this.spec?.selector;
-    case ML_WORKLOAD_TYPES.RAY_CLUSTER:
-      return {
-        matchLabels: {
-          'app.kubernetes.io/name': 'kuberay',
-          'ray.io/cluster':         this.name
-        }
-      };
-    default:
-      return this.metadata?.labels;
+      case ML_WORKLOAD_TYPES.MODEL_SERVICE:
+        return this.spec?.selector;
+      case ML_WORKLOAD_TYPES.NOTEBOOK:
+        return this.spec?.selector;
+      case ML_WORKLOAD_TYPES.RAY_CLUSTER:
+        return {
+          matchLabels: {
+            'app.kubernetes.io/name': 'kuberay',
+            'ray.io/cluster': this.name,
+          },
+        };
+      default:
+        return this.metadata?.labels;
     }
   }
 
   get ready() {
-    const readyReplicas = Math.max(0, (this.status?.replicas || 0) - (this.status?.unavailableReplicas || 0));
+    const readyReplicas = Math.max(
+      0,
+      (this.status?.replicas || 0) - (this.status?.unavailableReplicas || 0)
+    );
 
     if (this.type === WORKLOAD_TYPES.DAEMON_SET) {
       return readyReplicas;
     }
 
-    return `${ readyReplicas }/${ this.desired }`;
+    return `${readyReplicas}/${this.desired}`;
   }
 
   get unavailable() {
@@ -217,7 +233,7 @@ export default class MlWorkload extends MLWorkloadService {
       return 'in-progress';
     }
 
-    if ( this.isPaused ) {
+    if (this.isPaused) {
       return 'paused';
     }
 
@@ -225,7 +241,10 @@ export default class MlWorkload extends MLWorkloadService {
   }
 
   get isPaused() {
-    return this.metadata.annotations?.[ANNOTATIONS.RESOURCE_STOPPED] || this.spec.replicas === 0;
+    return (
+      this.metadata.annotations?.[ANNOTATIONS.RESOURCE_STOPPED] ||
+      this.spec.replicas === 0
+    );
   }
 
   pause() {
@@ -258,7 +277,7 @@ export default class MlWorkload extends MLWorkloadService {
   siOptions() {
     return {
       increment: 1024,
-      suffix:    'i',
+      suffix: 'i',
     };
   }
 
@@ -266,7 +285,9 @@ export default class MlWorkload extends MLWorkloadService {
     let containers = this.spec.template?.spec?.containers || [];
 
     if (this.type === ML_WORKLOAD_TYPES.RAY_CLUSTER) {
-      containers = containers.concat(this.spec.headGroupSpec.template.spec.containers || []);
+      containers = containers.concat(
+        this.spec.headGroupSpec.template.spec.containers || []
+      );
       this.spec.workerGroupSpecs.forEach((worker) => {
         containers = containers.concat(worker.template.spec.containers || []);
       });
@@ -304,6 +325,8 @@ export default class MlWorkload extends MLWorkloadService {
       return sum + (container.resources?.limits[NVIDIA.vGPUMem] || 0);
     }, 0);
 
-    return !totalVRAM ? 'N/A' : formatSi(parseSi(totalVRAM), VRAM_PARSE_RULES.format);
+    return !totalVRAM
+      ? 'N/A'
+      : formatSi(parseSi(totalVRAM), VRAM_PARSE_RULES.format);
   }
 }
