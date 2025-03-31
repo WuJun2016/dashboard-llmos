@@ -14,34 +14,35 @@ export default class MlWorkload extends MLWorkloadService {
     let out = super._availableActions;
 
     insertAt(out, 0, {
-      action: 'openShell',
+      action:  'openShell',
       enabled: !!this.links.view,
-      icon: 'icon icon-fw icon-chevron-right',
-      label: this.t('action.openShell'),
-      total: 1,
+      icon:    'icon icon-fw icon-chevron-right',
+      label:   this.t('action.openShell'),
+      total:   1,
     });
 
     if (type !== ML_WORKLOAD_TYPES.RAY_CLUSTER) {
       insertAt(out, 1, {
-        action: 'pause',
-        label: this.t('asyncButton.pause.action'),
-        icon: 'icon icon-pause',
-        enabled: !!this.links.update && !this.isPaused,
+        action:   'pause',
+        label:    this.t('asyncButton.pause.action'),
+        icon:     'icon icon-pause',
+        enabled:  !!this.links.update && !this.isPaused,
+        bulkable: true,
       });
 
       insertAt(out, 1, {
-        action: 'resume',
-        label: this.t('asyncButton.resume.action'),
-        icon: 'icon icon-play',
+        action:  'resume',
+        label:   this.t('asyncButton.resume.action'),
+        icon:    'icon icon-play',
         enabled: !!this.links.update && this.isPaused,
       });
     }
 
     insertAt(out, 5, {
-      action: 'redeploy',
-      label: this.t('action.redeploy'),
-      icon: 'icon icon-refresh',
-      enabled: !!this.links.update,
+      action:   'redeploy',
+      label:    this.t('action.redeploy'),
+      icon:     'icon icon-refresh',
+      enabled:  !!this.links.update,
       bulkable: true,
     });
 
@@ -70,7 +71,7 @@ export default class MlWorkload extends MLWorkloadService {
     this.$dispatch(
       'growl/error',
       {
-        title: 'Unavailable',
+        title:   'Unavailable',
         message: 'There are no running pods to execute a shell in.',
       },
       { root: true }
@@ -84,19 +85,19 @@ export default class MlWorkload extends MLWorkloadService {
   get details() {
     return [
       {
-        label: this.t('mlWorkload.detail.detailTop.cpu'),
+        label:   this.t('mlWorkload.detail.detailTop.cpu'),
         content: this.cpuLimit,
       },
       {
-        label: this.t('mlWorkload.detail.detailTop.memory'),
+        label:   this.t('mlWorkload.detail.detailTop.memory'),
         content: this.memoryLimit,
       },
       {
-        label: this.t('mlWorkload.detail.detailTop.vgpu'),
+        label:   this.t('mlWorkload.detail.detailTop.vgpu'),
         content: this.vgpu,
       },
       {
-        label: this.t('mlWorkload.detail.detailTop.vram'),
+        label:   this.t('mlWorkload.detail.detailTop.vram'),
         content: this.vram,
       },
     ];
@@ -124,9 +125,7 @@ export default class MlWorkload extends MLWorkloadService {
     }
     this.$dispatch(
       'growl/success',
-      {
-        message: `${this.kind} ${this.name} has been successfully redeployed.`,
-      },
+      { message: `${ this.kind } ${ this.name } has been successfully redeployed.` },
       { root: true }
     );
   }
@@ -191,19 +190,19 @@ export default class MlWorkload extends MLWorkloadService {
     const type = this._type ? this._type : this.type;
 
     switch (type) {
-      case ML_WORKLOAD_TYPES.MODEL_SERVICE:
-        return this.spec?.selector;
-      case ML_WORKLOAD_TYPES.NOTEBOOK:
-        return this.spec?.selector;
-      case ML_WORKLOAD_TYPES.RAY_CLUSTER:
-        return {
-          matchLabels: {
-            'app.kubernetes.io/name': 'kuberay',
-            'ray.io/cluster': this.name,
-          },
-        };
-      default:
-        return this.metadata?.labels;
+    case ML_WORKLOAD_TYPES.MODEL_SERVICE:
+      return this.spec?.selector;
+    case ML_WORKLOAD_TYPES.NOTEBOOK:
+      return this.spec?.selector;
+    case ML_WORKLOAD_TYPES.RAY_CLUSTER:
+      return {
+        matchLabels: {
+          'app.kubernetes.io/name': 'kuberay',
+          'ray.io/cluster':         this.name,
+        },
+      };
+    default:
+      return this.metadata?.labels;
     }
   }
 
@@ -217,7 +216,7 @@ export default class MlWorkload extends MLWorkloadService {
       return readyReplicas;
     }
 
-    return `${readyReplicas}/${this.desired}`;
+    return `${ readyReplicas }/${ this.desired }`;
   }
 
   get unavailable() {
@@ -277,7 +276,7 @@ export default class MlWorkload extends MLWorkloadService {
   siOptions() {
     return {
       increment: 1024,
-      suffix: 'i',
+      suffix:    'i',
     };
   }
 
@@ -325,8 +324,6 @@ export default class MlWorkload extends MLWorkloadService {
       return sum + (container.resources?.limits[NVIDIA.vGPUMem] || 0);
     }, 0);
 
-    return !totalVRAM
-      ? 'N/A'
-      : formatSi(parseSi(totalVRAM), VRAM_PARSE_RULES.format);
+    return !totalVRAM ? 'N/A' : formatSi(parseSi(totalVRAM), VRAM_PARSE_RULES.format);
   }
 }
