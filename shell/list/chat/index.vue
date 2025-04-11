@@ -19,6 +19,7 @@ import useChat from './composables/useChat';
 import SystemPrompt from '@shell/list/chat/components/SystemPrompt.vue';
 import SideConfig from '@shell/list/chat/components/SideConfig.vue';
 import cloneDeep from 'lodash/cloneDeep';
+import { Banner } from '@components/Banner';
 
 const store = useStore();
 const loadFetch = async() => {
@@ -208,8 +209,11 @@ const callbackAbortFetch = () => {
   }
 };
 
-const regenerate = async() => {
-  const lastQuestion = await store.dispatch('chat/REGENERATE_MESSAGE');
+const regenerate = async(uuid, question = '') => {
+  const lastQuestion = await store.dispatch('chat/REGENERATE_MESSAGE', {
+    key: uuid || 'single',
+    question
+  });
 
   if (lastQuestion) {
     abortFetch.value = await send({
@@ -279,6 +283,7 @@ const regenerate = async() => {
                 :key="i"
                 :message="message"
                 :loading="message.isStop ? false : loading"
+                :uuid="activeUUID"
                 @regenerate="regenerate"
               />
             </ChatFlex>
@@ -322,9 +327,14 @@ const regenerate = async() => {
           </div>
         </a-col>
       </a-row>
-
+      <Banner
+        v-if="!activeConfig.model"
+        color="warning"
+        :label="t('chat.emptyModelTip')"
+      />
       <ChatInput
         v-model="question"
+        :disabled="!activeConfig.model"
         :loading="isChatType ?loading : compareFetchLoading"
         @submit="submit"
         @update:abort="callbackAbortFetch"
@@ -334,6 +344,7 @@ const regenerate = async() => {
     <SideConfig
       v-model:drawerOpen="drawerOpen"
       :activeConfig="activeConfig"
+      @update:model="updateModel"
     />
   </div>
 </template>

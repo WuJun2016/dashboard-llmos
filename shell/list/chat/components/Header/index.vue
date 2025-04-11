@@ -59,7 +59,7 @@ const toggleDrawer = () => {
       >
     </div>
 
-    <div class="flex items-center gap-x-5">
+    <div class="flex items-center gap-x-3">
       <slot name="extra" />
       <ButtonGroup
         v-model:value="chatType"

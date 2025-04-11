@@ -560,9 +560,9 @@ module.exports = function(dir, appConfig = {}) {
   const proxy = getProxyConfig(appConfig.proxy);
   const config = {
     // Vue server
-    devServer:  getDevServerConfig(proxy),
-    publicPath: resourceBase || undefined,
-    css:        {
+    devServer:           getDevServerConfig(proxy),
+    publicPath:          resourceBase || undefined,
+    css:                 {
       extract:       false, // inline css styles instead of including with `<links`
       loaderOptions: {
         sass: {
