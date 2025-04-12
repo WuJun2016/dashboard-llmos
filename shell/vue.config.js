@@ -560,9 +560,9 @@ module.exports = function(dir, appConfig = {}) {
   const proxy = getProxyConfig(appConfig.proxy);
   const config = {
     // Vue server
-    devServer:           getDevServerConfig(proxy),
-    publicPath:          resourceBase || undefined,
-    css:                 {
+    devServer:  getDevServerConfig(proxy),
+    publicPath: resourceBase || undefined,
+    css:        {
       extract:       false, // inline css styles instead of including with `<links`
       loaderOptions: {
         sass: {
@@ -594,7 +594,7 @@ module.exports = function(dir, appConfig = {}) {
       config.resolve.alias['@shell'] = SHELL_ABS;
       config.resolve.alias['@pkg'] = path.join(dir, 'pkg');
       config.resolve.alias['./node_modules'] = path.join(dir, 'node_modules');
-      config.resolve.alias['@components'] = COMPONENTS_DIR;
+      config.resolve.alias['@shell/components'] = COMPONENTS_DIR;
       config.resolve.alias['vue$'] = dev ? path.resolve(process.cwd(), 'node_modules', 'vue') : 'vue';
       config.resolve.modules.push(__dirname);
       config.plugins.push(getVirtualModules(dir, includePkg));

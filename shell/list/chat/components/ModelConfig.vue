@@ -2,7 +2,7 @@
 import { useStore } from 'vuex';
 import { computed, defineEmits, ref, watch } from 'vue';
 
-import LabeledInput from '@components/Form/LabeledInput/LabeledInput.vue';
+import LabeledInput from '@shell/components/form/LabeledInput/LabeledInput.vue';
 import SliderInput from '@shell/components/SliderInput.vue';
 import SelectModel from '@shell/list/chat/components/SelectModel.vue';
 

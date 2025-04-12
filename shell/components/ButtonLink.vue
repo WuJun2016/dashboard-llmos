@@ -1,8 +1,9 @@
-<script setup>
+<script setup lang="ts">
+import { defineProps, PropType } from 'vue';
 import { RouteLocationRaw } from 'vue-router';
 defineProps({
   to: {
-    type:     RouteLocationRaw,
+    type:     Object as PropType<RouteLocationRaw>,
     required: true,
   },
   linkLabel: {
