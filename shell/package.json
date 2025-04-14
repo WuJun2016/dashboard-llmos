@@ -167,7 +167,8 @@
     "nth-check": ">=2.0.1",
     "follow-redirects": ">=1.14.7",
     "merge": ">=2.1.1",
-    "@vue/cli-service/html-webpack-plugin": "^5.0.0"
+    "@vue/cli-service/html-webpack-plugin": "^5.0.0",
+    "vue-loader": "^16.8.1"
   },
   "nyc": {
     "extension": [

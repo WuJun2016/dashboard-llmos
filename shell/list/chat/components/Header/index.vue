@@ -1,76 +1,30 @@
 <script setup>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
-import { useI18n } from '@shell/composables/useI18n';
-import ButtonGroup from '@/shell/components/ButtonGroup.vue';
-import { useModelLogo } from '../../composables/useModelLogo';
-
-const props = defineProps({
-  icon: {
-    type:     String,
-    required: true,
-  },
-  drawerOpen: {
-    type:    Boolean,
-    default: true,
-  }
-});
-
-const emits = defineEmits(['update:drawer']);
-
-const store = useStore();
-const { t } = useI18n(store);
-
-const { modelLogo } = useModelLogo(() => props.icon);
-
-const options = [
-  {
-    label: t('chat.type.chat'),
-    value: 'chat',
-  },
-  {
-    label: t('chat.type.compare'),
-    value: 'compare',
-  },
-];
-
-const isChatType = computed(() => store.getters['chat/isChatType']);
-const chatType = computed({
-  get: () => store.state.chat.chatType,
-  set: (value) => store.commit('chat/SET_CHAT_TYPE', value)
-});
-
-const toggleDrawer = () => {
-  emits('update:drawer', !props.drawerOpen);
-};
+import { ref } from "vue";
+const num = ref(1000);
+console.log("----num.value", num.value);
 </script>
 
 <template>
   <div class="flex justify-between items-center">
     <div class="flex items-center gap-x-5">
-      <h1 class="mb-0">
+      <!-- <h1 class="mb-0">
         {{ t("chat.type.chat") }}
-      </h1>
+      </h1> -->
 
-      <img
+      <!-- <img
         v-if="isChatType"
         class="size-[30px]"
         :src="modelLogo"
-      >
+      > -->
     </div>
-
-    <div class="flex items-center gap-x-3">
+    <h2>header content {{ num }}</h2>
+    <p>h-p {{ num }}</p>
+    <!-- <div class="flex items-center gap-x-3">
       <slot name="extra" />
-      <ButtonGroup
-        v-model:value="chatType"
-        :options="options"
-      />
-      <a-button
-        type="link"
-        @click="toggleDrawer"
-      >
+      <ButtonGroup v-model:value="chatType" :options="options" />
+      <a-button type="link" @click="toggleDrawer">
         <i class="icon icon-lg icon-gear" />
       </a-button>
-    </div>
+    </div> -->
   </div>
 </template>

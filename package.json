@@ -9,9 +9,6 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "workspaces": [
-    "pkg/rancher-components"
-  ],
   "scripts": {
     "build-pkg": "yarn lint && ./shell/scripts/build-pkg.sh",
     "publish-pkg": "./shell/scripts/publish-pkg.sh",
@@ -227,6 +224,7 @@
     "nth-check": ">=2.0.1",
     "follow-redirects": ">=1.14.7",
     "merge": ">=2.1.1",
-    "@vue/cli-service/html-webpack-plugin": "^5.0.0"
+    "@vue/cli-service/html-webpack-plugin": "^5.0.0",
+    "vue-loader": "^16.8.1"
   }
 }
