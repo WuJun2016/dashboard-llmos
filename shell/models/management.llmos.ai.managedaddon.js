@@ -4,6 +4,7 @@ import { DESCRIPTION } from '@shell/config/labels-annotations';
 import { set } from '@shell/utils/object';
 import { _EDIT, ENABLED, MODE } from '@shell/config/query-params';
 import { NAME as LLMOS } from '@shell/config/product/llmos';
+import jsyaml from 'js-yaml';
 
 export const systemAddonLabel = 'llmos.ai/system-addon';
 export const addonAllowEditLabel = 'llmos.ai/system-addon-allow-edit';
@@ -182,5 +183,19 @@ export default class ManagedAddon extends SteveModel {
     return (
       this.metadata.labels['llmos.ai/alpha'] === 'true'
     );
+  }
+
+  get gpuMemoryFactor() {
+    if (this.spec?.valuesContent) {
+      try {
+        const values = jsyaml.load(this.spec.valuesContent);
+
+        return values?.devicePlugin?.gpuMemoryFactor || 1;
+      } catch (e) {
+        return 1;
+      }
+    }
+
+    return 1;
   }
 }

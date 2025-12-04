@@ -265,7 +265,7 @@ export default class ClusterNode extends SteveModel {
       return 0;
     }
 
-    return ((this.vramUsage * 100) / this.vramCapacity).toString();
+    return ((this.vramUsage * 100) / (this.vramCapacity)).toString();
   }
 
   get podUsage() {

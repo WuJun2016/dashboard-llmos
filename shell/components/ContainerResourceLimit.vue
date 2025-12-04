@@ -65,6 +65,11 @@ export default {
     handleVGpu: {
       type:    Boolean,
       default: false
+    },
+
+    gpuMemoryFactor: {
+      type:    Number,
+      default: 1
     }
   },
 
@@ -168,7 +173,24 @@ export default {
         },
         query,
       };
-    }
+    },
+
+    displayLimitsVGpuMem: {
+      get() {
+        if (this.limitsVGpuMem) {
+          return this.limitsVGpuMem / this.gpuMemoryFactor;
+        }
+
+        return this.limitsVGpuMem;
+      },
+      set(val) {
+        if (val) {
+          this.limitsVGpuMem = val * this.gpuMemoryFactor;
+        } else {
+          this.limitsVGpuMem = val;
+        }
+      }
+    },
   },
 
   created() {
@@ -388,7 +410,7 @@ export default {
           <span class="col span-6">
             <UnitInput
               v-if="enableVGpu"
-              v-model:value="limitsVGpuMem"
+              v-model:value="displayLimitsVGpuMem"
               required
               :placeholder="t('containerResourceLimit.vGPUMemPlaceholder')"
               :label="t('containerResourceLimit.vGPUMem')"

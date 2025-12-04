@@ -201,6 +201,7 @@ export default {
             v-model:value="flatResources"
             :mode="mode"
             :show-tip="false"
+            :gpu-memory-factor="valuesContent.devicePlugin.gpuMemoryFactor"
           />
         </div>
       </Tab>

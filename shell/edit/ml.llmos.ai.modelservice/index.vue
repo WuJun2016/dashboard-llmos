@@ -54,6 +54,19 @@ export default {
 
     await this.resourceManagerFetchSecondaryResources(this.secondaryResourceData);
 
+    try {
+      const gpuStackAddon = await this.$store.dispatch(`${ inStore }/find`, {
+        type: MANAGEMENT.MANAGED_ADDON,
+        id:   'llmos-gpu-stack-system/llmos-gpu-stack',
+      });
+
+      if (gpuStackAddon) {
+        this.gpuMemoryFactor = gpuStackAddon.gpuMemoryFactor;
+      }
+    } catch (e) {
+      // ignore error
+    }
+
     const huggingFaceProxy = hash.settings?.find(
       (item) => item.id === SETTING.HUGGINGfACE_ENDPOINT
     );
@@ -124,6 +137,7 @@ export default {
         { label: '文本嵌入(Text Embedding)', value: 'embedding' },
         { label: '重排序(Rerank)', value: 'score' },
       ],
+      gpuMemoryFactor: 1,
     };
   },
 
@@ -776,6 +790,7 @@ export default {
             :handle-gpu-limit="true"
             :handle-v-gpu="true"
             :show-tip="false"
+            :gpu-memory-factor="gpuMemoryFactor"
           />
         </Tab>
 
