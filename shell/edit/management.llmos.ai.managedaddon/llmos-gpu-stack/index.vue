@@ -3,6 +3,7 @@ import NameNsDescription from '@shell/components/form/NameNsDescription.vue';
 import Tab from '@shell/components/Tabbed/Tab.vue';
 import ResourceTabs from '@shell/components/form/ResourceTabs/index.vue';
 import { LabeledInput } from '@shell/components/form/LabeledInput';
+import LabeledSelect from '@shell/components/form/LabeledSelect';
 import { Checkbox } from '@shell/components/form/Checkbox';
 import ManagedAddonMixin from '@shell/edit/management.llmos.ai.managedaddon/mixin/addon';
 import merge from 'lodash/merge';
@@ -27,6 +28,7 @@ export default {
     NameNsDescription,
     Checkbox,
     LabeledInput,
+    LabeledSelect,
   },
   data() {
     const spec = this.value.spec;
@@ -62,6 +64,7 @@ export default {
         { label: 'Binpack', value: 'binpack' },
         { label: 'Spread', value: 'spread' },
       ],
+      gpuMemoryFactorOptions: [1, 10],
     };
   },
   mixins: [ManagedAddonMixin],
@@ -227,6 +230,17 @@ export default {
                 :label="t('managedAddon.llmosGPUStack.deviceSplitCount.label')"
                 :tooltip="t('managedAddon.llmosGPUStack.deviceSplitCount.description')"
                 :mode="mode"
+                required
+              />
+            </div>
+
+            <div class="col span-6 mb-10">
+              <LabeledSelect
+                v-model:value="valuesContent.devicePlugin.gpuMemoryFactor"
+                :label="t('managedAddon.llmosGPUStack.gpuMemoryFactor.label')"
+                :tooltip="t('managedAddon.llmosGPUStack.gpuMemoryFactor.description')"
+                :mode="mode"
+                :options="gpuMemoryFactorOptions"
                 required
               />
             </div>

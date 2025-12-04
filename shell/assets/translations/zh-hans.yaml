@@ -6333,6 +6333,9 @@ managedAddon:
     deviceSplitCount:
       label: 最大 vGPU 数量/设备
       description: 单个 GPU 设备最多可分配的 vGPU 任务数量
+    gpuMemoryFactor:
+      label: GPU 显存超分系数
+      description: 设置显存超分比例，允许分配超过物理显存的 vGPU 任务
   tools:
     header: Cluster Tools
     noTools: 'No Cluster Tools found'

@@ -6663,6 +6663,9 @@ managedAddon:
     deviceSplitCount:
       label: vGPU Count/Device
       description: Maximum vGPU tasks can be allocated to a single GPU device
+    gpuMemoryFactor:
+      label: GPU Memory Factor
+      description: Set the memory oversubscription ratio, allowing allocation of vGPU memory exceeding physical memory
   tools:
     header: Cluster Tools
     noTools: "No Cluster Tools found"
