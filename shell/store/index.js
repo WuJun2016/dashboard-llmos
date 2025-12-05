@@ -584,6 +584,16 @@ export const getters = {
     return `${ base }/latest`;
   },
 
+  gpuMemoryFactor(state, getters) {
+    const gpuStackAddon = getters['management/byId'](MANAGEMENT.MANAGED_ADDON, 'llmos-gpu-stack-system/llmos-gpu-stack');
+
+    if (gpuStackAddon && gpuStackAddon.spec?.valuesContent) {
+      return gpuStackAddon.gpuMemoryFactor;
+    }
+
+    return 1;
+  },
+
   ...gcGetters
 };
 
@@ -741,6 +751,10 @@ export const actions = {
 
     if ( getters['management/schemaFor'](NAMESPACE) ) {
       promises['namespaces'] = dispatch('management/findAll', { type: NAMESPACE });
+    }
+
+    if ( getters['management/schemaFor'](MANAGEMENT.MANAGED_ADDON) ) {
+      promises['managedAddons'] = dispatch('management/findAll', { type: MANAGEMENT.MANAGED_ADDON });
     }
 
     // if ( getters['management/schemaFor'](ENDPOINTS) ) {

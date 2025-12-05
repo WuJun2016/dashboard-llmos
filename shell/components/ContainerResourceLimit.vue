@@ -178,14 +178,14 @@ export default {
     displayLimitsVGpuMem: {
       get() {
         if (this.limitsVGpuMem) {
-          return this.limitsVGpuMem / this.gpuMemoryFactor;
+          return this.limitsVGpuMem * this.gpuMemoryFactor;
         }
 
         return this.limitsVGpuMem;
       },
       set(val) {
         if (val) {
-          this.limitsVGpuMem = val * this.gpuMemoryFactor;
+          this.limitsVGpuMem = val / this.gpuMemoryFactor;
         } else {
           this.limitsVGpuMem = val;
         }

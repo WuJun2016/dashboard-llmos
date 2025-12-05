@@ -325,6 +325,8 @@ export default class MlWorkload extends MLWorkloadService {
       return sum + (container.resources?.limits[NVIDIA.vGPUMem] || 0);
     }, 0);
 
-    return !totalVRAM ? 'N/A' : formatSi(parseSi(totalVRAM), VRAM_PARSE_RULES.format);
+    const gpuMemoryFactor = this.$rootGetters['gpuMemoryFactor'];
+
+    return !totalVRAM ? 'N/A' : formatSi(parseSi(totalVRAM) * gpuMemoryFactor, VRAM_PARSE_RULES.format);
   }
 }

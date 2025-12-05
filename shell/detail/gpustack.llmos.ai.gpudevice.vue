@@ -127,7 +127,9 @@ export default {
 
         // If a matching devPod is found, add calculated properties to the pod
         if (devPod) {
-          pod.vram = formatSi(devPod.memReq, this.memSiOptions);
+          const gpuMemoryFactor = this.$store.getters['gpuMemoryFactor'];
+
+          pod.vram = formatSi(devPod.memReq * gpuMemoryFactor, this.memSiOptions);
           pod.vgpu = devPod.vgpu ? parseSi(devPod.vgpu) : 1;
           pod.cores = devPod.coresReq ? `${ devPod.coresReq }%` : 'N/A';
         }
@@ -148,7 +150,7 @@ export default {
         uuid:     status.uuid,
         vendor:   status.vendor,
         devName:  status.devName,
-        vRAM:     formatSi(status.vram, this.memSiOptions),
+        vRAM:     formatSi(this.value.vramTotalValue, this.memSiOptions),
         vGPU:     this.value.vGPUCount,
         nodeName: status.nodeName,
         index:    status.index,

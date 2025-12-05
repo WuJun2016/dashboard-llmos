@@ -7,7 +7,9 @@ import {
 } from '@shell/config/table-headers';
 import metricPoller from '@shell/mixins/metric-poller';
 
-import { LLMOS, METRIC, NODE, POD } from '@shell/config/types';
+import {
+  LLMOS, METRIC, NODE, POD, MANAGEMENT
+} from '@shell/config/types';
 import { allHash } from '@shell/utils/promise';
 import { GROUP_RESOURCES, mapPref } from '@shell/store/prefs';
 // import { COLUMN_BREAKPOINTS } from '@shell/components/SortableTable/index.vue';
@@ -42,8 +44,9 @@ export default {
     this.$initializeFetchData(this.resource);
 
     const hash = {
-      kubeNodes:  this.$fetchType(this.resource),
-      gpuDevices: this.$fetchType(LLMOS.GPUDEVICE),
+      kubeNodes:     this.$fetchType(this.resource),
+      gpuDevices:    this.$fetchType(LLMOS.GPUDEVICE),
+      managedAddons: this.$fetchType(MANAGEMENT.MANAGED_ADDON),
     };
 
     this.canViewPods = this.$store.getters[`cluster/schemaFor`](POD);

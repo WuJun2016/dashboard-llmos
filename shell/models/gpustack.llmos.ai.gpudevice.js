@@ -11,8 +11,12 @@ export default class GPUDevice extends SteveModel {
     return `${ requestedCount }/${ this.status.maxCount }`;
   }
 
+  get gpuMemoryFactor() {
+    return this.$rootGetters['gpuMemoryFactor'];
+  }
+
   get vramUsageValue() {
-    return this.status?.vramUsed;
+    return this.status?.vramUsed * this.gpuMemoryFactor;
   }
 
   get vramUsage() {
@@ -23,18 +27,22 @@ export default class GPUDevice extends SteveModel {
     return parseSi(this.vramUsageValue.toString(), VRAM_PARSE_RULES.format);
   }
 
+  get vramTotalValue() {
+    return this.status?.vram * this.gpuMemoryFactor;
+  }
+
   get vramCapacity() {
-    if (!this.status?.vram) {
+    if (!this.vramTotalValue) {
       return 0;
     }
 
-    return parseSi(this.status?.vram.toString(), VRAM_PARSE_RULES.format);
+    return parseSi(this.vramTotalValue.toString(), VRAM_PARSE_RULES.format);
   }
 
   get vramAllocated() {
     const amountTemplateValues = {
       used:  roundToDecimal((this.vramUsageValue / 1024) || 0, 1),
-      total: roundToDecimal((this.status.vram / 1024) || 0, 1),
+      total: roundToDecimal((this.vramTotalValue / 1024) || 0, 1),
       unit:  'GiB'
     };
 

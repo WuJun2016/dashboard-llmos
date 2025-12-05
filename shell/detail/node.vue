@@ -11,7 +11,7 @@ import {
   VALUE
 } from '@shell/config/table-headers';
 import ResourceTabs from '@shell/components/form/ResourceTabs';
-import { LLMOS, METRIC, POD } from '@shell/config/types';
+import { LLMOS, METRIC, POD, MANAGEMENT } from '@shell/config/types';
 import createEditView from '@shell/mixins/create-edit-view';
 import { formatSi, exponentNeeded, UNITS } from '@shell/utils/units';
 import { mapGetters } from 'vuex';
@@ -59,7 +59,10 @@ export default {
 
   async fetch() {
     const inStore = this.$store.getters['currentProduct'].inStore;
-    const hash = { pods: this.$store.dispatch(`${ inStore }/findAll`, { type: POD }) };
+    const hash = {
+      pods:          this.$store.dispatch(`${ inStore }/findAll`, { type: POD }),
+      managedAddons: this.$store.dispatch(`${ inStore }/findAll`, { type: MANAGEMENT.MANAGED_ADDON })
+    };
 
     this.canViewGpuDevices = this.$store.getters[`${ inStore }/schemaFor`](LLMOS.GPUDEVICE);
     if (this.canViewGpuDevices) {

@@ -1,6 +1,6 @@
 import { formatPercent } from '@shell/utils/string';
 import { NODE_ROLES, RKE, SYSTEM_LABELS } from '@shell/config/labels-annotations.js';
-import { LLMOS, METRIC, POD } from '@shell/config/types';
+import { LLMOS, METRIC, POD, MANAGEMENT } from '@shell/config/types';
 import { parseSi, VRAM_PARSE_RULES } from '@shell/utils/units';
 import findLast from 'lodash/findLast';
 
@@ -225,12 +225,18 @@ export default class ClusterNode extends SteveModel {
     return ((this.ramUsage * 100) / this.ramReserved).toString();
   }
 
+  get gpuMemoryFactor() {
+    return this.$rootGetters['gpuMemoryFactor'];
+  }
+
   get vramCapacity() {
     if (!this.status?.allocatable?.[NVIDIA.vGPUMem]) {
       return 0;
     }
 
-    return parseSi(this.status.allocatable[NVIDIA.vGPUMem]?.toString(), VRAM_PARSE_RULES.format);
+    const rawVram = parseSi(this.status.allocatable[NVIDIA.vGPUMem]?.toString(), VRAM_PARSE_RULES.format);
+
+    return rawVram / this.gpuMemoryFactor;
   }
 
   get vramUsage() {
@@ -253,7 +259,11 @@ export default class ClusterNode extends SteveModel {
       return acc;
     }, 0);
 
-    return parseSi(vramUsage.toString(), VRAM_PARSE_RULES.format);
+    const rawUsage = parseSi(vramUsage.toString(), VRAM_PARSE_RULES.format);
+
+    console.log('🚀 ~ file: node.js:267 ~ rawUsage:', rawUsage);
+
+    return rawUsage / this.gpuMemoryFactor;
   }
 
   get vramUsagePercentage() {
